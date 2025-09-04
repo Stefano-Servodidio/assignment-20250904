@@ -5,4 +5,4 @@ const instance = Axios.create()
 
 const axios = setupCache(instance)
 
-export default
+export default axios
