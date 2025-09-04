@@ -14,11 +14,9 @@ import {
 } from '@chakra-ui/react'
 import { Rocket, Code, Zap } from 'lucide-react'
 import { useAppContext } from '../../context/AppContext'
+import ListItem from '../../components/ListItem'
 
 const Home: React.FC = () => {
-  const cardBg = useColorModeValue('white', 'gray.800')
-  const borderColor = useColorModeValue('gray.100', 'gray.700')
-
   const { leagues, fetchLeagues } = useAppContext()
 
   React.useEffect(() => {
@@ -31,7 +29,7 @@ const Home: React.FC = () => {
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} mt={16}>
         {leagues.map((league, index) => (
           <GridItem key={index}>
-            <Box
+            {/* <Box
               bg={cardBg}
               p={6}
               rounded="xl"
@@ -50,7 +48,17 @@ const Home: React.FC = () => {
               <Text color="gray.600" minH={'24px'}>
                 {league.strLeagueAlternate}
               </Text>
-            </Box>
+            </Box> */}
+            <ListItem
+              title={league.strLeague}
+              info={[
+                { label: 'Sport', value: league.strSport },
+                {
+                  label: 'Alternate Name',
+                  value: league.strLeagueAlternate || 'N/A'
+                }
+              ]}
+            />
           </GridItem>
         ))}
       </SimpleGrid>
