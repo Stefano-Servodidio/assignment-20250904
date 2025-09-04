@@ -1,0 +1,17 @@
+CHECKLIST
+
+remember to take screens of AI usage
+
+1. Create repo
+2. clone repo
+4. bolt
+5. paste in repo
+6. debug
+6. Axios + context
+7. ListItem
+8. usePagination
+9. ListFilters
+10. Responsive
+11. Tests
+12. Accessibility
+13. extra
