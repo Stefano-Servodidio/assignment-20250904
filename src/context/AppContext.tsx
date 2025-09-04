@@ -1,13 +1,12 @@
-import React, { createContext, useContext } from 'react'
+import { createContext, useContext } from 'react'
 import { League } from '../types/api'
 
 // Global state provider for the application
 interface AppContextProps {
   leagues: League[]
-  errors: string[]
-  setErrors: React.Dispatch<React.SetStateAction<string[]>>
+  leagueBadges: { [leagueId: string]: string }
+  fetchLeagueBadges: (id: string) => Promise<void>
   fetchLeagues: () => Promise<void>
-  // fetchLeagueBadges: () => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextProps | undefined>(undefined)

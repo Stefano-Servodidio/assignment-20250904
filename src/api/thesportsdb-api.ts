@@ -17,11 +17,13 @@ export const fetchAllLeagues = async () => {
     return response.data?.leagues || []
   } catch (error) {
     console.error('Error fetching all leagues:', error)
-    throw error
+    return []
   }
 }
 
-export const fetchLeagueBadges = async (id: string): Promise<LeagueBadge[]> => {
+export const fetchAllLeagueBadges = async (
+  id: string
+): Promise<LeagueBadge[]> => {
   try {
     const response = await axios.get(
       `${API_URL}search_all_seasons.php?badge=1&id=${id}`,
@@ -36,6 +38,6 @@ export const fetchLeagueBadges = async (id: string): Promise<LeagueBadge[]> => {
     return response.data?.seasons || []
   } catch (error) {
     console.error('Error fetching league badge:', error)
-    throw error
+    return []
   }
 }

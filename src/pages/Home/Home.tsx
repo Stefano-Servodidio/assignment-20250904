@@ -1,15 +1,9 @@
 import React from 'react'
 import {
-  Box,
   Button,
-  Grid,
   GridItem,
-  Heading,
-  Text,
   VStack,
   HStack,
-  Icon,
-  useColorModeValue,
   SimpleGrid,
   Card,
   CardBody,
@@ -22,15 +16,26 @@ import usePagination from '../../hooks/usePagination'
 import { League } from '../../types/api'
 
 const Home: React.FC = () => {
-  const { leagues, fetchLeagues } = useAppContext()
+  const { leagues, fetchLeagues, leagueBadges, fetchLeagueBadges } =
+    useAppContext()
   const { visibleItems, showMore, updateItems, hasMore } = usePagination(10)
+  const [filterValue, setFilterValue] = React.useState('')
+  const [selectValue, setSelectValue] = React.useState('')
+
   React.useEffect(() => {
     fetchLeagues()
   }, [fetchLeagues])
 
   React.useEffect(() => {
-    updateItems(leagues)
-  }, [leagues, updateItems])
+    const filteredLeagues = leagues.filter((league) => {
+      const matchesFilter = league.strLeague
+        .toLowerCase()
+        .includes(filterValue.toLowerCase())
+      const matchesSelect = selectValue ? league.strSport === selectValue : true
+      return matchesFilter && matchesSelect
+    })
+    updateItems(filteredLeagues)
+  }, [leagues, updateItems, filterValue, selectValue])
 
   const selectOptions = React.useMemo(() => {
     const results = Array.from(
@@ -44,17 +49,17 @@ const Home: React.FC = () => {
       <CardBody>
         <VStack spacing={12} align="stretch">
           <ListFilters
-            filterValue=""
-            onFilterChange={() => {}}
-            selectValue=""
-            onSelectChange={() => {}}
-            {...{ selectOptions }}
+            filterValue={filterValue}
+            onFilterChange={setFilterValue}
+            selectOptions={selectOptions}
+            selectValue={selectValue}
+            onSelectChange={setSelectValue}
           />
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
             {!visibleItems.length && (
               <>
                 {Array.from({ length: 10 }).map((_, idx) => (
-                  <GridItem key={idx}>
+                  <GridItem key={'placeholder' + idx}>
                     <Skeleton
                       height="20px"
                       width="30%"
@@ -69,27 +74,7 @@ const Home: React.FC = () => {
             {!!visibleItems.length && (
               <>
                 {visibleItems.map((league, index) => (
-                  <GridItem key={index}>
-                    {/* <Box
-              bg={cardBg}
-              p={6}
-              rounded="xl"
-              shadow="sm"
-              border="1px"
-              borderColor={borderColor}
-              _hover={{ shadow: 'md' }}
-              transition="shadow 0.2s"
-            >
-              <Heading as="h3" size="md" color="gray.900" mb={2}>
-                {league.strLeague}
-              </Heading>
-              <Text color="gray.600" minH={'24px'}>
-                {league.strSport}
-              </Text>
-              <Text color="gray.600" minH={'24px'}>
-                {league.strLeagueAlternate}
-              </Text>
-            </Box> */}
+                  <GridItem key={'league' + index}>
                     <ListItem
                       title={(league as League).strLeague}
                       info={[
@@ -99,8 +84,10 @@ const Home: React.FC = () => {
                           value: (league as League).strLeagueAlternate || 'N/A'
                         }
                       ]}
-                      badge={''}
-                      onClick={() => {}}
+                      badge={leagueBadges[(league as League).idLeague] || ''}
+                      onClick={() => {
+                        fetchLeagueBadges((league as League).idLeague)
+                      }}
                     />
                   </GridItem>
                 ))}

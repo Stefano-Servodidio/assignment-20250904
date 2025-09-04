@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import React, { useState } from 'react'
-import { fetchAllLeagues } from '../api/thesportsdb-api'
+import { fetchAllLeagues, fetchAllLeagueBadges } from '../api/thesportsdb-api'
 import { AppContext } from './AppContext'
 import { League } from '../types/api'
 
@@ -8,30 +8,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   children
 }) => {
   const [leagues, setLeagues] = useState<League[]>([])
-  const [errors, setErrors] = useState<string[]>([])
+  const [leagueBadges, setLeagueBadges] = useState<{
+    [leagueId: string]: string
+  }>({})
 
   const fetchLeagues = async () => {
     setLeagues([])
-    try {
-      const data = await fetchAllLeagues()
-      console.log('Fetched leagues:', data)
-      setLeagues(data || [])
-    } catch (error) {
-      setErrors((prev) => [...prev, 'Failed to fetch leagues'])
-    }
+    const data = await fetchAllLeagues()
+    setLeagues(data)
   }
-
-  //   const fetchLeagueBadges = async (id: string) => {
-  //     // Implementation for fetching league badges can be added here
-  //   }
+  const fetchLeagueBadges = async (id: string) => {
+    setLeagueBadges((prev) => ({ ...prev, [id]: '' }))
+    const seasons = await fetchAllLeagueBadges(id)
+    const lastSeason = seasons?.[seasons.length - 1]
+    if (!lastSeason?.strBadge) return
+    setLeagueBadges((prev) => ({ ...prev, [id]: lastSeason.strBadge }))
+  }
 
   return (
     <AppContext.Provider
       value={{
         leagues,
         fetchLeagues,
-        errors,
-        setErrors
+        leagueBadges,
+        fetchLeagueBadges
       }}
     >
       {children}

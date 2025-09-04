@@ -3,19 +3,12 @@ import {
   Box,
   Flex,
   Heading,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Text,
   useColorModeValue,
-  Spinner,
   useDisclosure
 } from '@chakra-ui/react'
 import React from 'react'
+import ListItemPopover from './ListItemPopover'
 
 export type ListInfo = {
   label: string
@@ -37,58 +30,39 @@ const ListItem: React.FC<{
     onClick()
   }
   return (
-    <Popover isOpen={isOpen} onClose={onClose}>
-      <PopoverTrigger>
-        <Box
-          bg={cardBg}
-          p={6}
-          rounded="xl"
-          shadow="sm"
-          border="1px"
-          borderColor={borderColor}
-          _hover={{ shadow: 'md' }}
-          transition="shadow 0.2s"
-          onClick={handleClick}
-        >
-          <Heading as="h3" size="md" color="gray.900" mb={2}>
-            {title}
-          </Heading>
-          {info.map((item, index) => (
-            <Flex key={index} alignItems="center" mb={1}>
-              <Text
-                key={index}
-                color="gray.600"
-                fontWeight={'semibold'}
-                minWidth={'120px'}
-              >
-                {item.label}:
-              </Text>
-              <Text key={index} color="gray.600" flexGrow={1} ml={2}>
-                {item.value}
-              </Text>
-            </Flex>
-          ))}
-        </Box>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverBody>
-          {!badge && <Spinner />}
-          {badge && (
-            <img
-              src={badge}
-              alt={`${title} Badge`}
-              style={{
-                maxWidth: '80px',
-                maxHeight: '80px',
-                borderRadius: '8px'
-              }}
-            />
-          )}
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <ListItemPopover
+      title={title}
+      badge={badge}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <Box
+        bg={cardBg}
+        p={6}
+        rounded="xl"
+        shadow="sm"
+        border="1px"
+        borderColor={borderColor}
+        _hover={{ shadow: 'md' }}
+        transition="shadow 0.2s"
+        onClick={handleClick}
+        cursor={'pointer'}
+      >
+        <Heading as="h3" size="md" color="gray.900" mb={2}>
+          {title}
+        </Heading>
+        {info.map((item, index) => (
+          <Flex key={'listItemInfo' + index} alignItems="center" mb={1}>
+            <Text color="gray.600" fontWeight={'semibold'} minWidth={'120px'}>
+              {item.label}:
+            </Text>
+            <Text color="gray.600" flexGrow={1} ml={2}>
+              {item.value}
+            </Text>
+          </Flex>
+        ))}
+      </Box>
+    </ListItemPopover>
   )
 }
 
